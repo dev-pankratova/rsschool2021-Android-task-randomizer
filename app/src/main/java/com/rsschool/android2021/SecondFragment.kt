@@ -8,10 +8,17 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 
+interface PreviousValueInterface {
+    fun givePrevious(previous: Int)
+}
+
 class SecondFragment : Fragment() {
 
     private var backButton: Button? = null
     private var result: TextView? = null
+    private var valueInterface: PreviousValueInterface? = null
+
+    private var previousValue = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,13 +39,22 @@ class SecondFragment : Fragment() {
         result?.text = generate(min, max).toString()
 
         backButton?.setOnClickListener {
-            // TODO: implement back
+            valueInterface?.givePrevious(previousValue)
         }
     }
 
+    fun setInterface(inter: PreviousValueInterface) {
+        this.valueInterface = inter
+    }
+
+    fun givePreviousValue() {
+        valueInterface?.givePrevious(previousValue)
+    }
+
     private fun generate(min: Int, max: Int): Int {
-        // TODO: generate random number
-        return 0
+        val range = min until max
+        previousValue = range.random()
+        return previousValue
     }
 
     companion object {
@@ -47,9 +63,9 @@ class SecondFragment : Fragment() {
         fun newInstance(min: Int, max: Int): SecondFragment {
             val fragment = SecondFragment()
             val args = Bundle()
-
-            // TODO: implement adding arguments
-
+            args.putInt(MIN_VALUE_KEY, min)
+            args.putInt(MAX_VALUE_KEY, max)
+            fragment.arguments = args
             return fragment
         }
 
